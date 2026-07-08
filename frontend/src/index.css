@@ -1,0 +1,292 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap");
+
+:root {
+  --navy: #132539;
+  --sky: #3E7CB1;
+  --sky-light: #DCEAF7;
+  --amber: #E8A33D;
+  --bg: #F7F9FB;
+  --card: #FFFFFF;
+  --text: #23384D;
+  --text-muted: #6B8098;
+  --border: #E1E8EF;
+  --danger: #C0473A;
+  --radius: 10px;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ---------- Header / horizon signature element ---------- */
+.app-header {
+  position: relative;
+  padding: 28px 24px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--navy) 0%, var(--sky) 100%);
+  color: white;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.app-header .horizon-arc {
+  position: absolute;
+  bottom: -60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.25);
+}
+
+.app-header h1 {
+  font-size: 1.8rem;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.app-header p {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
+  position: relative;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  border: none;
+  background: none;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--navy);
+  border-bottom-color: var(--amber);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* ---------- Search bar ---------- */
+.search-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-row input {
+  flex: 1;
+  min-width: 200px;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+}
+
+.btn {
+  padding: 11px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-primary { background: var(--navy); color: white; }
+.btn-secondary { background: var(--sky-light); color: var(--navy); }
+.btn-amber { background: var(--amber); color: var(--navy); }
+.btn-danger { background: #FBEAE8; color: var(--danger); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- Current weather ---------- */
+.current-weather {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.current-weather .icon { font-size: 3.2rem; }
+
+.current-weather .temp {
+  font-family: var(--font-mono);
+  font-size: 2.6rem;
+  font-weight: 500;
+}
+
+.stat-strip {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.stat-strip strong { color: var(--text); font-family: var(--font-mono); }
+
+/* ---------- Forecast grid (instrument ruler cards) ---------- */
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.forecast-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  background: var(--sky-light);
+}
+
+.forecast-card .day-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.forecast-card .icon { font-size: 1.6rem; margin: 4px 0; }
+
+.forecast-card .range {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.forecast-card .range .max { font-weight: 600; }
+.forecast-card .range .min { color: var(--text-muted); }
+
+/* ---------- Error banner ---------- */
+.error-banner {
+  background: #FBEAE8;
+  border: 1px solid #F0C6C0;
+  color: var(--danger);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+/* ---------- Records table ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
+
+.row-actions { display: flex; gap: 6px; }
+.row-actions button { padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; border: none; }
+
+/* ---------- Form grid ---------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.form-grid input, .form-grid textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+label { font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
+
+/* ---------- Extras (map/youtube) ---------- */
+.extras-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .extras-grid { grid-template-columns: 1fr; }
+  .app-header h1 { font-size: 1.4rem; }
+  .current-weather .temp { font-size: 2rem; }
+}
+
+.video-list { display: flex; flex-direction: column; gap: 8px; }
+.video-item { display: flex; gap: 8px; align-items: center; text-decoration: none; color: var(--text); }
+.video-item img { width: 90px; border-radius: 6px; }
+.video-item span { font-size: 0.82rem; }
+
+iframe.map-embed {
+  width: 100%;
+  height: 220px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.app-footer strong { color: var(--text); }
+
+.export-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.muted-note { font-size: 0.8rem; color: var(--text-muted); }
