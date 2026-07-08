@@ -1,7 +1,7 @@
-# Weatherly — Weather App
+# Weatherly
 
-Full-stack weather app built for the PM Accelerator AI Engineer Intern technical assessment
-(Tech Assessment #1 + #2 — Full Stack).
+A full-stack weather app — search any location, view current conditions and a 5-day
+forecast, save and manage location records, and export your data in multiple formats.
 
 **Built by:** Nour Mohamed Elbarawi
 
@@ -37,8 +37,8 @@ Runs at `http://localhost:5173` — open that URL in your browser. That's it.
 - CRUD: save a location + date range, read/list saved records, edit them, delete them
   (backed by SQLite; date ranges and locations are validated before saving)
 - Export all saved records as JSON, CSV, XML, Markdown, or PDF
-- Bonus API integrations: an embedded map (OpenStreetMap, no key needed) and optional
-  YouTube videos about the searched location (needs a free YouTube Data API key)
+- Embedded map and YouTube travel videos for the searched location (map works out of the
+  box; videos need a free YouTube Data API key)
 
 ## Tech stack
 
@@ -107,7 +107,7 @@ npm run dev
 This starts the app at `http://localhost:5173`. Open that URL in your browser — the frontend
 automatically proxies API requests to the backend (see `vite.config.js`).
 
-### Optional: YouTube bonus feature
+### YouTube videos (optional)
 
 Get a free key at https://console.cloud.google.com/apis/library/youtube.googleapis.com,
 then put it in `backend/.env`:
@@ -128,7 +128,7 @@ weather-app/
     services/
       geocode.js         # location string -> lat/lon (Nominatim) + autocomplete (Photon)
       weather.js          # current/forecast/date-range weather (Open-Meteo)
-      youtube.js           # optional bonus videos
+      youtube.js           # YouTube travel videos (optional)
     routes/
       weather.js          # GET /api/weather/lookup
       records.js          # CRUD  /api/records
