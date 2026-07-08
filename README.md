@@ -1,8 +1,4 @@
 # Weatherly — Weather App
-
-Full-stack weather app built for the PM Accelerator AI Engineer Intern technical assessment
-(Tech Assessment #1 + #2 — Full Stack).
-
 **Built by:** Nour Mohamed Elbarawi
 
 ## What it does
