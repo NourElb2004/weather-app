@@ -1,7 +1,7 @@
 import { Router } from "express";
 import db from "../db.js";
-import { geocodeLocation, AppGeocodeError } from "../services/geocode.js";
-import { getDailyRange, AppWeatherError } from "../services/weather.js";
+import { geocodeLocation } from "../services/geocode.js";
+import { getDailyRange } from "../services/weather.js";
 import { handleError } from "./weather.js";
 
 const router = Router();
@@ -26,7 +26,6 @@ function validateDateRange(startDate, endDate) {
   return null;
 }
 
-// CREATE
 router.post("/", async (req, res) => {
   try {
     const { location, startDate, endDate, notes } = req.body;
@@ -39,8 +38,6 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: dateError });
     }
 
-    // Validates the location really exists (geocoding throws a friendly
-    // 404-style error if it can't find/fuzzy-match anything).
     const coords = await geocodeLocation(location);
     const dailyData = await getDailyRange(coords.latitude, coords.longitude, startDate, endDate);
 
@@ -67,20 +64,17 @@ router.post("/", async (req, res) => {
   }
 });
 
-// READ (all)
 router.get("/", (req, res) => {
   const rows = db.prepare("SELECT * FROM weather_records ORDER BY created_at DESC").all();
   res.json(rows.map(deserialize));
 });
 
-// READ (one)
 router.get("/:id", (req, res) => {
   const row = db.prepare("SELECT * FROM weather_records WHERE id = ?").get(req.params.id);
   if (!row) return res.status(404).json({ error: "Record not found." });
   res.json(deserialize(row));
 });
 
-// UPDATE
 router.put("/:id", async (req, res) => {
   try {
     const existing = db.prepare("SELECT * FROM weather_records WHERE id = ?").get(req.params.id);
@@ -97,8 +91,6 @@ router.put("/:id", async (req, res) => {
     let coords = { latitude: existing.latitude, longitude: existing.longitude, resolvedName: existing.resolved_name };
     let dailyData = JSON.parse(existing.daily_data);
 
-    // Only re-fetch weather if location or dates actually changed, so a
-    // notes-only edit doesn't burn an extra API call.
     const locationChanged = location !== existing.query_input;
     const datesChanged = startDate !== existing.start_date || endDate !== existing.end_date;
     if (locationChanged || datesChanged) {
@@ -130,7 +122,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE
 router.delete("/:id", (req, res) => {
   const info = db.prepare("DELETE FROM weather_records WHERE id = ?").run(req.params.id);
   if (info.changes === 0) return res.status(404).json({ error: "Record not found." });

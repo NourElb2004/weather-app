@@ -1,9 +1,17 @@
-// Turns whatever the user typed - zip code, city, landmark, "lat,lon" - into
-// coordinates + a human-readable name. Uses OpenStreetMap's free Nominatim
-// service, so no API key / signup is required to run this project.
-
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const PHOTON_URL = "https://photon.komoot.io/api/";
 const COORD_REGEX = /^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/;
+
+const NOMINATIM_HEADERS = { "User-Agent": "PMA-WeatherApp-TechAssessment/1.0 (educational project)" };
+
+function photonLabel(props) {
+  const primary = props.name || props.street || props.osm_value;
+  const bits = [primary];
+  if (props.city && props.city !== primary) bits.push(props.city);
+  if (props.state && props.state !== primary) bits.push(props.state);
+  if (props.country) bits.push(props.country);
+  return bits.filter(Boolean).join(", ");
+}
 
 export async function geocodeLocation(rawInput) {
   const input = (rawInput || "").trim();
@@ -11,7 +19,6 @@ export async function geocodeLocation(rawInput) {
     throw new AppGeocodeError("Please enter a location.");
   }
 
-  // 1. GPS coordinates entered directly, e.g. "31.2, 29.9"
   const coordMatch = input.match(COORD_REGEX);
   if (coordMatch) {
     const latitude = parseFloat(coordMatch[1]);
@@ -26,18 +33,11 @@ export async function geocodeLocation(rawInput) {
     };
   }
 
-  // 2. Everything else (zip/postal code, city, town, landmark) goes through
-  //    Nominatim's free-form search, which handles all of these reasonably well.
   const url = `${NOMINATIM_URL}?q=${encodeURIComponent(input)}&format=json&limit=1&addressdetails=1`;
 
   let response;
   try {
-    response = await fetch(url, {
-      headers: {
-        // Nominatim's usage policy requires a descriptive User-Agent.
-        "User-Agent": "PMA-WeatherApp-TechAssessment/1.0 (educational project)",
-      },
-    });
+    response = await fetch(url, { headers: NOMINATIM_HEADERS });
   } catch (err) {
     throw new AppGeocodeError("Could not reach the geocoding service. Check your internet connection.");
   }
@@ -57,6 +57,35 @@ export async function geocodeLocation(rawInput) {
     longitude: parseFloat(best.lon),
     resolvedName: best.display_name,
   };
+}
+
+export async function suggestLocations(rawInput) {
+  const input = (rawInput || "").trim();
+  if (input.length < 3 || COORD_REGEX.test(input)) {
+    return [];
+  }
+
+  const url = `${PHOTON_URL}?q=${encodeURIComponent(input)}&limit=5`;
+
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (err) {
+    return [];
+  }
+  if (!response.ok) return [];
+
+  const data = await response.json();
+  const seen = new Set();
+  const suggestions = [];
+  for (const feature of data.features || []) {
+    const [longitude, latitude] = feature.geometry.coordinates;
+    const label = photonLabel(feature.properties);
+    if (!label || seen.has(label)) continue;
+    seen.add(label);
+    suggestions.push({ label, latitude, longitude });
+  }
+  return suggestions;
 }
 
 export class AppGeocodeError extends Error {

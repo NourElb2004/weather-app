@@ -6,7 +6,7 @@ import recordsRoutes from "./routes/records.js";
 import exportRoutes from "./routes/export.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
 app.use(cors());
 app.use(express.json());
@@ -16,7 +16,6 @@ app.use("/api/weather", weatherRoutes);
 app.use("/api/records", recordsRoutes);
 app.use("/api/export", exportRoutes);
 
-// Catch-all error handler for anything that slips past route-level try/catch.
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ error: "Unexpected server error." });

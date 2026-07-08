@@ -10,7 +10,6 @@ function getRecords() {
     .map((row) => ({ ...row, daily_data: JSON.parse(row.daily_data) }));
 }
 
-// GET /api/export?format=json|csv|xml|pdf|markdown
 router.get("/", async (req, res) => {
   const format = (req.query.format || "json").toLowerCase();
   const records = getRecords();
@@ -44,8 +43,6 @@ function sendFile(res, filename, contentType, body) {
 }
 
 function exportCsv(records, res) {
-  // Flatten so each daily reading gets its own row - much more useful in a
-  // spreadsheet than one JSON blob per record.
   const flatRows = records.flatMap((r) =>
     r.daily_data.map((d) => ({
       id: r.id,

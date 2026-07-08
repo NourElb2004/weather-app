@@ -2,12 +2,11 @@ const BASE = "/api";
 
 async function handle(response) {
   if (!response.ok) {
-    let message = `Request failed (${response.status})`;
+    let message = "Something went wrong talking to the server. Please try again.";
     try {
       const body = await response.json();
       if (body.error) message = body.error;
     } catch (_) {
-      /* response had no JSON body */
     }
     throw new Error(message);
   }
@@ -15,38 +14,53 @@ async function handle(response) {
   return response.json();
 }
 
-export function lookupWeather({ location, lat, lon }) {
+async function request(url, options) {
+  let response;
+  try {
+    response = await fetch(url, options);
+  } catch (err) {
+    throw new Error("Could not reach the server. Check your connection and try again.");
+  }
+  return handle(response);
+}
+
+export function lookupWeather({ location, lat, lon, name }) {
   const params = new URLSearchParams();
   if (location) params.set("location", location);
   if (lat !== undefined && lon !== undefined) {
     params.set("lat", lat);
     params.set("lon", lon);
+    if (name) params.set("name", name);
   }
-  return fetch(`${BASE}/weather/lookup?${params.toString()}`).then(handle);
+  return request(`${BASE}/weather/lookup?${params.toString()}`);
+}
+
+export function suggestLocations(query, signal) {
+  return request(`${BASE}/weather/suggest?q=${encodeURIComponent(query)}`, { signal });
 }
 
 export function listRecords() {
-  return fetch(`${BASE}/records`).then(handle);
+  return request(`${BASE}/records`);
 }
 
 export function createRecord(payload) {
-  return fetch(`${BASE}/records`, {
+  return request(`${BASE}/records`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-  }).then(handle);
+  });
 }
 
 export function updateRecord(id, payload) {
-  return fetch(`${BASE}/records/${id}`, {
+  return request(`${BASE}/records/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-  }).then(handle);
+  });
 }
 
 export function deleteRecord(id) {
-  return fetch(`${BASE}/records/${id}`, { method: "DELETE" }).then(handle);
+  return request(`${BASE}/records/${id}`, { method: "DELETE" });
 }
 
 export function exportUrl(format) {

@@ -1,8 +1,17 @@
-// Optional bonus feature (section 2.2): show YouTube videos about the searched
-// location. Requires a free YouTube Data API v3 key. If no key is configured,
-// this simply returns an empty list instead of crashing the app.
-
 const YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
+
+const HTML_ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", "#39": "'" };
+
+function decodeHtmlEntities(str) {
+  return str.replace(/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z]+);/g, (match, entity) => {
+    if (entity[0] === "#") {
+      const code =
+        entity[1] === "x" || entity[1] === "X" ? parseInt(entity.slice(2), 16) : parseInt(entity.slice(1), 10);
+      return String.fromCodePoint(code);
+    }
+    return HTML_ENTITIES[entity] ?? match;
+  });
+}
 
 export async function searchLocationVideos(locationName) {
   const apiKey = process.env.YOUTUBE_API_KEY;
@@ -22,9 +31,9 @@ export async function searchLocationVideos(locationName) {
   const data = await response.json();
   const videos = (data.items || []).map((item) => ({
     videoId: item.id.videoId,
-    title: item.snippet.title,
+    title: decodeHtmlEntities(item.snippet.title),
     thumbnail: item.snippet.thumbnails?.medium?.url,
-    channel: item.snippet.channelTitle,
+    channel: decodeHtmlEntities(item.snippet.channelTitle),
   }));
 
   return { enabled: true, videos };

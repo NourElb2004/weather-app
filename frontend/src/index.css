@@ -44,7 +44,6 @@ button {
   padding: 24px 20px 60px;
 }
 
-/* ---------- Header / horizon signature element ---------- */
 .app-header {
   position: relative;
   padding: 28px 24px;
@@ -66,6 +65,15 @@ button {
   border: 1px dashed rgba(255,255,255,0.25);
 }
 
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+.brand-row svg { flex-shrink: 0; }
+
 .app-header h1 {
   font-size: 1.8rem;
   letter-spacing: -0.02em;
@@ -79,7 +87,6 @@ button {
   position: relative;
 }
 
-/* ---------- Tabs ---------- */
 .tabs {
   display: flex;
   gap: 4px;
@@ -102,7 +109,6 @@ button {
   border-bottom-color: var(--amber);
 }
 
-/* ---------- Cards ---------- */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -111,11 +117,72 @@ button {
   margin-bottom: 16px;
 }
 
-/* ---------- Search bar ---------- */
+.mode-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.mode-tab-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mode-tab-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: white;
+}
+
 .search-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.location-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.location-input-wrap input {
+  width: 100%;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(19, 37, 57, 0.14);
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.suggestion-item {
+  padding: 9px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.suggestion-item.active,
+.suggestion-item:hover {
+  background: var(--sky-light);
 }
 
 .search-row input {
@@ -142,7 +209,6 @@ button {
 .btn-danger { background: #FBEAE8; color: var(--danger); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ---------- Current weather ---------- */
 .current-weather {
   display: flex;
   align-items: center;
@@ -169,7 +235,6 @@ button {
 
 .stat-strip strong { color: var(--text); font-family: var(--font-mono); }
 
-/* ---------- Forecast grid (instrument ruler cards) ---------- */
 .forecast-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -201,7 +266,6 @@ button {
 .forecast-card .range .max { font-weight: 600; }
 .forecast-card .range .min { color: var(--text-muted); }
 
-/* ---------- Error banner ---------- */
 .error-banner {
   background: #FBEAE8;
   border: 1px solid #F0C6C0;
@@ -212,7 +276,6 @@ button {
   margin-bottom: 16px;
 }
 
-/* ---------- Records table ---------- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -231,7 +294,6 @@ th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transf
 .row-actions { display: flex; gap: 6px; }
 .row-actions button { padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; border: none; }
 
-/* ---------- Form grid ---------- */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -250,7 +312,6 @@ th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transf
 
 label { font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
 
-/* ---------- Extras (map/youtube) ---------- */
 .extras-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -275,7 +336,6 @@ iframe.map-embed {
   border-radius: 8px;
 }
 
-/* ---------- Footer ---------- */
 .app-footer {
   margin-top: 30px;
   padding-top: 20px;

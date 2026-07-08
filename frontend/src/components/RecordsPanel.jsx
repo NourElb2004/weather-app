@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { listRecords, createRecord, updateRecord, deleteRecord } from "../api.js";
 
 const emptyForm = { location: "", startDate: "", endDate: "", notes: "" };
@@ -9,6 +9,7 @@ export default function RecordsPanel() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     refresh();
@@ -57,6 +58,10 @@ export default function RecordsPanel() {
     setForm(emptyForm);
   }
 
+  function toggleExpand(id) {
+    setExpandedId((current) => (current === id ? null : id));
+  }
+
   async function remove(id) {
     if (!confirm("Delete this record?")) return;
     try {
@@ -70,9 +75,7 @@ export default function RecordsPanel() {
   return (
     <div>
       <div className="card">
-        <h3 style={{ marginBottom: 10, fontSize: "1rem" }}>
-          {editingId ? "Edit saved record" : "Save a new location + date range"}
-        </h3>
+        {editingId && <h3 style={{ marginBottom: 10, fontSize: "1rem" }}>Edit saved record</h3>}
         {error && <div className="error-banner">{error}</div>}
         <form onSubmit={submit}>
           <div className="form-grid">
@@ -139,24 +142,51 @@ export default function RecordsPanel() {
               </thead>
               <tbody>
                 {records.map((r) => (
-                  <tr key={r.id}>
-                    <td>{r.resolved_name}</td>
-                    <td>
-                      {r.start_date} → {r.end_date}
-                    </td>
-                    <td>{r.daily_data.length}</td>
-                    <td>{r.notes || "—"}</td>
-                    <td>
-                      <div className="row-actions">
-                        <button className="btn-secondary" onClick={() => startEdit(r)}>
-                          Edit
+                  <Fragment key={r.id}>
+                    <tr>
+                      <td>{r.resolved_name}</td>
+                      <td>
+                        {r.start_date} → {r.end_date}
+                      </td>
+                      <td>
+                        <button className="btn-secondary" onClick={() => toggleExpand(r.id)}>
+                          {expandedId === r.id ? "Hide" : "View"} ({r.daily_data.length})
                         </button>
-                        <button className="btn-danger" onClick={() => remove(r.id)}>
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                      <td>{r.notes || "—"}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button className="btn-secondary" onClick={() => startEdit(r)}>
+                            Edit
+                          </button>
+                          <button className="btn-danger" onClick={() => remove(r.id)}>
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedId === r.id && (
+                      <tr key={`${r.id}-detail`}>
+                        <td colSpan={5}>
+                          <div className="forecast-grid">
+                            {r.daily_data.map((d) => (
+                              <div className="forecast-card" key={d.date}>
+                                <div className="day-label">{d.date}</div>
+                                <div className="icon">{d.icon}</div>
+                                <div className="range">
+                                  <span className="max">{Math.round(d.tempMax)}°</span>{" "}
+                                  <span className="min">{Math.round(d.tempMin)}°</span>
+                                </div>
+                                <div className="muted-note" style={{ marginTop: 4 }}>
+                                  {d.description} · {d.precipitation}mm
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

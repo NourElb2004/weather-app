@@ -1,23 +1,25 @@
 import { Router } from "express";
-import { geocodeLocation, AppGeocodeError } from "../services/geocode.js";
+import { geocodeLocation, suggestLocations, AppGeocodeError } from "../services/geocode.js";
 import { getCurrentAndForecast, AppWeatherError } from "../services/weather.js";
 import { searchLocationVideos } from "../services/youtube.js";
 
 const router = Router();
 
-// GET /api/weather/lookup?location=<anything>&lat=&lon=
-// Resolves a location string (or raw lat/lon from browser geolocation) to
-// coordinates, then returns current weather + 5-day forecast + bonus extras.
+router.get("/suggest", async (req, res) => {
+  const suggestions = await suggestLocations(req.query.q);
+  res.json({ suggestions });
+});
+
 router.get("/lookup", async (req, res) => {
   try {
-    const { location, lat, lon } = req.query;
+    const { location, lat, lon, name } = req.query;
 
     let coords;
     if (lat !== undefined && lon !== undefined) {
       coords = {
         latitude: parseFloat(lat),
         longitude: parseFloat(lon),
-        resolvedName: "Your current location",
+        resolvedName: (name && name.trim()) || "Your current location",
       };
     } else {
       coords = await geocodeLocation(location);
@@ -45,7 +47,6 @@ router.get("/lookup", async (req, res) => {
 });
 
 function buildMapEmbedUrl(lat, lon) {
-  // Free OpenStreetMap embed - no API key required.
   const delta = 0.05;
   const bbox = `${lon - delta}%2C${lat - delta}%2C${lon + delta}%2C${lat + delta}`;
   return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${lat}%2C${lon}`;

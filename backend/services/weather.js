@@ -1,5 +1,3 @@
-// Weather data via Open-Meteo (https://open-meteo.com) - free, no API key needed.
-
 const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
 const ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive";
 
@@ -11,9 +9,7 @@ export class AppWeatherError extends Error {
   }
 }
 
-// WMO weather codes -> plain description + a simple emoji icon (no external
-// icon library / API key needed, and it degrades fine in any browser).
-export function describeWeatherCode(code) {
+function describeWeatherCode(code) {
   const map = {
     0: ["Clear sky", "☀️"],
     1: ["Mainly clear", "🌤️"],
@@ -60,7 +56,6 @@ async function fetchJson(url) {
   return response.json();
 }
 
-// Current conditions + next 5 days - used by the main "search a location" screen.
 export async function getCurrentAndForecast(latitude, longitude) {
   const url =
     `${FORECAST_URL}?latitude=${latitude}&longitude=${longitude}` +
@@ -90,10 +85,6 @@ export async function getCurrentAndForecast(latitude, longitude) {
   return { current, forecast, timezone: data.timezone };
 }
 
-// Arbitrary date-range daily weather - used by the CRUD "create record" flow.
-// Tries the forecast endpoint first (covers ~today +/- a few months due to
-// reanalysis backfill); falls back to the dedicated archive endpoint for
-// older historical ranges.
 export async function getDailyRange(latitude, longitude, startDate, endDate) {
   const dailyParams = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum";
 
