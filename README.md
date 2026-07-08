@@ -1,10 +1,5 @@
 # Weatherly
 
-A full-stack weather app — search any location, view current conditions and a 5-day
-forecast, save and manage location records, and export your data in multiple formats.
-
-**Built by:** Nour Mohamed Elbarawi
-
 ## Quick start
 
 Two terminals, five commands total — no API keys or accounts needed to get running.
