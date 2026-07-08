@@ -1,29 +1,4 @@
 # Weatherly
-
-## Quick start
-
-Two terminals, five commands total — no API keys or accounts needed to get running.
-
-**Terminal 1 — backend:**
-```bash
-cd backend
-npm install
-cp .env.example .env
-npm start
-```
-Runs at `http://localhost:5050`.
-
-**Terminal 2 — frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Runs at `http://localhost:5173` — open that URL in your browser. That's it.
-
-(Full details, including the optional YouTube key, in
-[Running it locally](#running-it-locally) below.)
-
 ## What it does
 
 - Search weather by zip/postal code, city, town, landmark, or raw GPS coordinates
